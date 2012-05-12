@@ -1,11 +1,8 @@
 source "http://rubygems.org"
 
+gem 'resque',  '~> 1.20'
 gem 'sinatra', '~> 1.3'
 gem 'thin',    '~> 1.3'
-
-group :development, :test do
-  gem 'fakes3', '~> 1.5'
-end
 
 group :test do
   gem 'rack-test', '~> 0.6'
