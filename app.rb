@@ -5,10 +5,11 @@ require File.dirname(File.expand_path(__FILE__)) + "/s3_file_cache_store_task"
 configure :production do
   set :s3_host,             ENV["S3_HOST_ALIAS"]
   set :cache_dir,           ENV["CACHE_DIR"]
-  set :redis_url,           ENV["REDISTOGO_URL"]
-  set :cache_avatar_domain, ENV["CACHE_AVATAR_DOMAIN"] || "avatars"
   set :username,            ENV["CACHE_INVALIDATION_USERNAME"]
   set :password,            ENV["CACHE_INVALIDATION_PASSWORD"]
+
+  set :redis_url,           ENV["REDISTOGO_URL"] || "redis://localhost:6789"
+  set :cache_avatar_domain, ENV["CACHE_AVATAR_DOMAIN"] || "avatars"
 end
 
 configure :development do
