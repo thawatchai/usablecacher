@@ -1,4 +1,4 @@
-require File.dirname(File.expand_path(__FILE__)) + '/asset_invalidator'
+require File.dirname(File.expand_path(__FILE__)) + '/app'
 require 'resque/tasks'
 
 task "resque:setup" do
