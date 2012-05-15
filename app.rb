@@ -8,7 +8,7 @@ configure :production do
   set :username,            ENV["CACHE_INVALIDATION_USERNAME"]
   set :password,            ENV["CACHE_INVALIDATION_PASSWORD"]
 
-  set :redis_url,           ENV["REDISTOGO_URL"] || "redis://localhost:6789"
+  set :redis_url,           ENV["REDISTOGO_URL"] || "redis://localhost:6379"
   set :cache_avatar_domain, ENV["CACHE_AVATAR_DOMAIN"] || "avatars"
 end
 
