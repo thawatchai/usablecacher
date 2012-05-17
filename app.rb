@@ -64,7 +64,7 @@ get "/avatars/:klass/:id_part1/:id_part2/:id_part3/:filename" do |klass, id_part
   end
 end
 
-get "/invalidate/avatars/:klass/:id_part1/:id_part2/:id_part3/:filename" do |klass, id_part1, id_part2, id_part3, filename|
+post "/invalidate/avatars/:klass/:id_part1/:id_part2/:id_part3/:filename" do |klass, id_part1, id_part2, id_part3, filename|
   protected!
   domain = settings.cache_avatar_domain ? "#{settings.cache_avatar_domain}/" : nil
   path = "avatars/#{klass}/#{id_part1}/#{id_part2}/#{id_part3}/#{filename}"

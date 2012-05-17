@@ -101,9 +101,9 @@ describe "S3FileCacheStoreTask" do
   end
 end
 
-describe "GET /invalidate/avatars/:klass/:id_part1/:id_part2/:id_part3/:filename" do
+describe "POST /invalidate/avatars/:klass/:id_part1/:id_part2/:id_part3/:filename" do
   def do_action
-    get "/invalidate/avatars/users/000/012/345/original.jpg?2352352352"
+    post "/invalidate/avatars/users/000/012/345/original.jpg?2352352352"
   end
 
   describe "without a valid authentication" do

@@ -6,7 +6,7 @@ require 'rspec'
 
 set :environment, :test
 
-require File.join(File.dirname(__FILE__), '..', 'asset_invalidator')
+require File.join(File.dirname(__FILE__), '..', 'app')
 
 RSpec.configure do |conf|
   conf.include Rack::Test::Methods
