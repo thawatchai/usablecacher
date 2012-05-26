@@ -50,36 +50,44 @@ helpers do
   end
 end
 
-get "/avatars/:klass/:id_part1/:id_part2/:id_part3/:filename" do |klass, id_part1, id_part2, id_part3, filename|
-  domain = settings.cache_avatar_domain ? "#{settings.cache_avatar_domain}/" : nil
-  path = "avatars/#{klass}/#{id_part1}/#{id_part2}/#{id_part3}/#{filename}"
-  cache_path = "#{settings.cache_dir}/#{domain}#{path}"
+["/avatars/:parent_klass/:klass/:id_part1/:id_part2/:id_part3/:filename",
+ "/avatars/:klass/:id_part1/:id_part2/:id_part3/:filename"].each do |url|
+  get url do
+    klass = params[:parent_klass] ? "#{params[:parent_klass]}/#{params[:klass]}" : params[:klass]
+    domain = settings.cache_avatar_domain ? "#{settings.cache_avatar_domain}/" : nil
+    path = "avatars/#{klass}/#{params[:id_part1]}/#{params[:id_part2]}/#{params[:id_part3]}/#{params[:filename]}"
+    cache_path = "#{settings.cache_dir}/#{domain}#{path}"
 
-  if File.exists?(cache_path)
-    send_file cache_path
-  else
-    server_path = "http://#{settings.s3_host}/#{path}?#{request.query_string}"
-    Resque.enqueue(S3FileCacheStoreTask, server_path, cache_path)
-    redirect server_path
+    if File.exists?(cache_path)
+      send_file cache_path
+    else
+      server_path = "http://#{settings.s3_host}/#{path}?#{request.query_string}"
+      Resque.enqueue(S3FileCacheStoreTask, server_path, cache_path)
+      redirect server_path
+    end
   end
 end
 
-post "/invalidate/avatars/:klass/:id_part1/:id_part2/:id_part3/:filename" do |klass, id_part1, id_part2, id_part3, filename|
-  protected!
-  domain = settings.cache_avatar_domain ? "#{settings.cache_avatar_domain}/" : nil
-  path = "avatars/#{klass}/#{id_part1}/#{id_part2}/#{id_part3}/#{filename}"
-  cache_path = "#{settings.cache_dir}/#{domain}#{path}"
+["/invalidate/avatars/:parent_klass/:klass/:id_part1/:id_part2/:id_part3/:filename",
+ "/invalidate/avatars/:klass/:id_part1/:id_part2/:id_part3/:filename"].each do |url|
+  post url do
+    protected!
+    klass = params[:parent_klass] ? "#{params[:parent_klass]}/#{params[:klass]}" : params[:klass]
+    domain = settings.cache_avatar_domain ? "#{settings.cache_avatar_domain}/" : nil
+    path = "avatars/#{klass}/#{params[:id_part1]}/#{params[:id_part2]}/#{params[:id_part3]}/#{params[:filename]}"
+    cache_path = "#{settings.cache_dir}/#{domain}#{path}"
 
-  if File.exists?(cache_path)
-    begin
-      File.delete(cache_path)
-      "Invalidation successful for: #{path}"
-    rescue Exception => e
-      status 422
-      "Unable to invalidate the cache for: #{path}\nError message: #{e.message}"
+    if File.exists?(cache_path)
+      begin
+        File.delete(cache_path)
+        "Invalidation successful for: #{path}"
+      rescue Exception => e
+        status 422
+        "Unable to invalidate the cache for: #{path}\nError message: #{e.message}"
+      end
+    else
+      "No cache found for: #{path}"
     end
-  else
-    "No cache found for: #{path}"
   end
 end
 
